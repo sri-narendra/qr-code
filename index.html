@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>QR Code Generator</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      padding: 2rem;
+      background: #f0f0f0;
+    }
+    input, button {
+      padding: 10px;
+      font-size: 16px;
+      margin: 10px;
+      width: 300px;
+    }
+    button {
+      background: #007BFF;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    img {
+      margin-top: 20px;
+      border: 1px solid #ccc;
+      padding: 10px;
+      background: white;
+    }
+  </style>
+</head>
+<body>
+  <h1>QR Code Generator</h1>
+  <input type="text" id="link" placeholder="Enter link to generate QR" />
+  <br>
+  <button onclick="generateQR()">Generate</button>
+  <div id="result"></div>
+
+  <script>
+    async function generateQR() {
+      const link = document.getElementById("link").value.trim();
+      const resultDiv = document.getElementById("result");
+
+      if (!link) {
+        alert("Please enter a link.");
+        return;
+      }
+
+      const api = `https://fastapi-tools.onrender.com/generate_qr?link=${encodeURIComponent(link)}`;
+
+      try {
+        const res = await fetch(api);
+        if (!res.ok) throw new Error("Failed to generate QR");
+
+        const blob = await res.blob();
+        const imgURL = URL.createObjectURL(blob);
+
+        resultDiv.innerHTML = `
+          <img src="${imgURL}" alt="QR Code" />
+          <p><a href="${imgURL}" download="qrcode.png">Download QR Code</a></p>
+        `;
+      } catch (e) {
+        resultDiv.innerHTML = `<p style="color:red;">Error: ${e.message}</p>`;
+      }
+    }
+  </script>
+</body>
+</html>

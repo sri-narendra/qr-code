@@ -4,6 +4,18 @@ import qrcode
 import io
 import base64
 
+def generate_qr(url):
+    qr = qrcode.QRCode(
+        version=1,
+        error_correction=qrcode.constants.ERROR_CORRECT_L,
+        box_size=10,
+        border=4,
+    )
+    qr.add_data(url)
+    qr.make(fit=True)
+    img = qr.make_image(fill_color="black", back_color="white")
+    return img
+
 def main():
     try:
         # Read input from stdin
@@ -11,17 +23,17 @@ def main():
         url = input_data.get("url")
         
         if not url:
-            print("Error: URL is required", file=sys.stderr)
+            print("Error: URL parameter is required", file=sys.stderr)
             exit(1)
 
-        # Generate QR code
-        qr = qrcode.make(url)
+        # Generate and convert to base64
+        img = generate_qr(url)
         buffer = io.BytesIO()
-        qr.save(buffer, format="PNG")
-        
-        # Return as base64
+        img.save(buffer, format="PNG")
         base64_img = base64.b64encode(buffer.getvalue()).decode("utf-8")
-        print(base64_img)  # 👈 This print is CRITICAL
+        
+        # Output must be printed
+        print(base64_img)
 
     except Exception as e:
         print(f"Error: {str(e)}", file=sys.stderr)

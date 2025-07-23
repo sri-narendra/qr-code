@@ -23,7 +23,7 @@ def main():
         buf = io.BytesIO()
         img.save(buf, format="PNG")
         base64_img = base64.b64encode(buf.getvalue()).decode()
-        print(base64_img)  # 👈 This is the output returned to frontend
+        print(base64_img)  # ✅ This is what's returned
     except Exception as e:
         print(f"QR generation failed: {e}", file=sys.stderr)
         exit(1)

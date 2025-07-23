@@ -1,0 +1,4 @@
+qrcode[pil]
+httpx
+fastapi
+uvicorn

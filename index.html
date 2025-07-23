@@ -2,37 +2,43 @@
 <html>
 <head>
   <title>QR Code Generator</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; margin-top: 40px; }
+    input, button { padding: 10px; font-size: 16px; width: 300px; }
+    button { margin-top: 10px; }
+    img { margin-top: 20px; border: 1px solid #ccc; max-width: 300px; }
+  </style>
 </head>
 <body>
-  <h1>Link to QR Code</h1>
-  <input type="text" id="urlInput" placeholder="Enter URL" />
+  <h1>Link to QR Generator</h1>
+  <input id="urlInput" type="text" placeholder="Enter URL" />
+  <br/>
   <button onclick="generateQR()">Generate QR</button>
   <div id="result"></div>
 
   <script>
     async function generateQR() {
       const url = document.getElementById("urlInput").value;
-
       const payload = {
         github_repo: "https://github.com/sri-narendra/qr-code",
-        backend_path: "/main.py",  // 👈 important
+        backend_path: "/main.py",  // 👈 Key fix: Remove "/main/"
         input_data: { url }
       };
 
       const res = await fetch("https://fastapi-tools.onrender.com/run/", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
       });
 
       const data = await res.json();
-      if (data.output && data.output.startsWith("iVBOR")) {
-        document.getElementById("result").innerHTML =
-          `<img src="data:image/png;base64,${data.output}" />`;
+      const resultDiv = document.getElementById("result");
+      resultDiv.innerHTML = "";
+
+      if (data.output && data.output.startsWith("iVBORw0")) {
+        resultDiv.innerHTML = `<img src="data:image/png;base64,${data.output}" alt="QR Code" />`;
       } else {
-        document.getElementById("result").innerText = "Error: " + data.output;
+        resultDiv.innerText = "Error: " + (data.output || "Could not generate QR.");
       }
     }
   </script>

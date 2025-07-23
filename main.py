@@ -1,8 +1,13 @@
 import sys
 import json
-import qrcode
-import io
-import base64
+try:
+    import qrcode
+    from qrcode.image.pil import PilImage
+    import io
+    import base64
+except ImportError as e:
+    print(f"ImportError: {str(e)}", file=sys.stderr)
+    exit(1)
 
 def generate_qr(url):
     qr = qrcode.QRCode(
@@ -13,8 +18,7 @@ def generate_qr(url):
     )
     qr.add_data(url)
     qr.make(fit=True)
-    img = qr.make_image(fill_color="black", back_color="white")
-    return img
+    return qr.make_image(fill_color="black", back_color="white")
 
 def main():
     try:

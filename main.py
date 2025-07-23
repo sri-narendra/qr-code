@@ -14,10 +14,10 @@ def main():
         print("Error: URL is required", file=sys.stderr)
         exit(1)
 
-    qr = qrcode.make(url)
-    buffer = io.BytesIO()
-    qr.save(buffer, format="PNG")
-    base64_img = base64.b64encode(buffer.getvalue()).decode("utf-8")
+    img = qrcode.make(url)
+    buf = io.BytesIO()
+    img.save(buf, format="PNG")
+    base64_img = base64.b64encode(buf.getvalue()).decode()
     print(base64_img)
 
 if __name__ == "__main__":

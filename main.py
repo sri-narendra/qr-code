@@ -1,3 +1,5 @@
+# main.py
+
 import sys
 import json
 import qrcode
